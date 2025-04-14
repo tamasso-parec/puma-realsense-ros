@@ -39,7 +39,10 @@ local_parameters = [{'name': 'camera_name',                  'default': 'camera'
                     {'name': 'device_type',                  'default': "d455", 'description': 'choose device by type'},
                     {'name': 'enable_color',                 'default': 'true', 'description': 'enable color stream'},
                     {'name': 'enable_depth',                 'default': 'true', 'description': 'enable depth stream'},
-                    {'name': 'pointcloud.enable',            'default': 'true', 'description': 'enable pointcloud'},
+                    {'name': 'align_depth.enable',           'default': 'true', 'description': 'enable align depth filter'},
+                    {'name': 'pointcloud.enable',            'default': 'false', 'description': 'enable pointcloud'},
+                    {'name': 'enable_sync',                  'default': 'true', 'description': 'sync depth and color'},
+                    {'name': 'enable_tf',                    'default': 'true', 'description': 'publish tf of camera'},
                    ]
 
 def to_urdf(xacro_path, parameters=None):
@@ -72,15 +75,15 @@ def generate_launch_description():
         OpaqueFunction(function=rs_launch.launch_setup,
                 kwargs = {'params' : set_configurable_parameters(params)}
         ),
-        launch_ros.actions.Node(
-            package='rviz2',
-            namespace='',
-            executable='rviz2',
-            name='rviz2',
-            arguments=['-d', [ThisLaunchFileDir(), '/rviz/urdf_pointcloud.rviz']],
-            output='screen',
-            parameters=[{'use_sim_time': False}]
-        ),
+        # launch_ros.actions.Node(
+        #     package='rviz2',
+        #     namespace='',
+        #     executable='rviz2',
+        #     name='rviz2',
+        #     arguments=['-d', [ThisLaunchFileDir(), '/rviz/urdf_pointcloud.rviz']],
+        #     output='screen',
+        #     parameters=[{'use_sim_time': False}]
+        # ),
         launch_ros.actions.Node(
             name='model_node',
             package='robot_state_publisher',
